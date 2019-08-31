@@ -34,7 +34,7 @@ namespace parking_lot
                 }
                 else if (args != null && args.Length != 1)
                 {
-                    Console.WriteLine("The input for running the app was incorrect. Please enter the file path.");
+                    Console.WriteLine("The input for running the app was incorrect. Please run without any argument or enter the file name.");
                 }
             }
             catch (Exception ex)
