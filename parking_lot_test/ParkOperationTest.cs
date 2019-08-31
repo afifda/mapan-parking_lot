@@ -181,6 +181,25 @@ namespace parking_lot_test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Enter_DuplicateRegistrationNUmber_ThrowException()
+        {            
+            var ParkingLot = GenerateParkingLot(2);
+            var _car1 = new Car()
+            {
+                PlateNumber = "XX-12345-ABC",
+                Colour = "Black"
+            };
+            parkOperationService.Enter(_car1);
+            var _car2 = new Car()
+            {
+                PlateNumber = "XX-12345-ABC",
+                Colour = "White"
+            };
+            parkOperationService.Enter(_car2);
+        }
+
+        [TestMethod]
         public void Enter_SlotNotAvailable_NullsReturned()
         {
             var _car1 = new Car()

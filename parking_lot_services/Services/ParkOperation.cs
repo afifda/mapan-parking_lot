@@ -1,6 +1,7 @@
 ﻿using parking_lot_services.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace parking_lot_services.Services
@@ -30,54 +31,33 @@ namespace parking_lot_services.Services
 
         public IList<IPark> GetParkingLot()
         {
-            var result = new List<IPark>();
-            for (var i = 0; i < ParkingLot.Count; i++)
-            {
-                if (!ParkingLot[i].IsAvailable)
-                {
-                    result.Add(ParkingLot[i]);
-                }
-            }
+            var result = (from p in ParkingLot
+                          where !p.IsAvailable
+                          select p).ToList();
             return result;
         }
 
         public IList<string> GetPlateNumbersByColour(string colour)
         {
-            var result = new List<string>();
-            for (var i = 0; i < ParkingLot.Count; i++)
-            {
-                if (ParkingLot[i].Vehicle.Colour == colour)
-                {
-                    result.Add(ParkingLot[i].Vehicle.PlateNumber);
-                }
-            }
+            var result = (from p in ParkingLot
+                          where p.Vehicle.Colour.Equals(colour)
+                          select p.Vehicle.PlateNumber).ToList();
             return result;
         }
 
         public int GetSlotNumberByPlateNumber(string plateNumber)
         {
-            var result = 0;
-            for (var i = 0; i < ParkingLot.Count; i++)
-            {
-                if (ParkingLot[i].Vehicle.PlateNumber == plateNumber)
-                {
-                    result = ParkingLot[i].SlotNumber;
-                    break;
-                }
-            }
+            var result = (from p in ParkingLot
+                          where p.Vehicle.PlateNumber.Equals(plateNumber)
+                          select p.SlotNumber).FirstOrDefault();
             return result;
         }
 
         public IList<int> GetSlotNumbersByColours(string colour)
         {
-            var result = new List<int>();
-            for (var i = 0; i < ParkingLot.Count; i++)
-            {
-                if (ParkingLot[i].Vehicle.Colour == colour)
-                {
-                    result.Add(ParkingLot[i].SlotNumber);
-                }
-            }
+            var result = (from p in ParkingLot
+                          where p.Vehicle.Colour.Equals(colour)
+                          select p.SlotNumber).ToList();
             return result;
         }
 
@@ -103,6 +83,11 @@ namespace parking_lot_services.Services
                 {
                     ParkingLot[i].ParkIn(car);
                     return ParkingLot[i];
+                }
+
+                if (ParkingLot[i].Vehicle.PlateNumber == car.PlateNumber)
+                {
+                    throw new ArgumentException("PlateNumber", "The same registration number already parked in.");
                 }
             }
             return null;
