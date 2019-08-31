@@ -17,7 +17,7 @@ namespace parking_lot_services.Services
         {
             if (lotCount < 1)
             {
-                throw new ArgumentException("Slot Number", "Slot Number must be greater than zero");
+                throw new ArgumentException("Slot Number must be greater than zero.", "Slot Number");
             }
             for (var i = 1; i <= lotCount; i++)
             {
@@ -77,17 +77,16 @@ namespace parking_lot_services.Services
 
         public IPark Enter(IVehicle car)
         {
+            if (ParkingLot.Any(p => p.Vehicle != null && p.Vehicle.PlateNumber == car.PlateNumber))
+            {
+                throw new ArgumentException("The same registration number already parked in.", "PlateNumber");
+            }
             for (var i = 0; i < ParkingLot.Count; i++)
             {
                 if (ParkingLot[i].IsAvailable)
                 {
                     ParkingLot[i].ParkIn(car);
                     return ParkingLot[i];
-                }
-
-                if (ParkingLot[i].Vehicle.PlateNumber == car.PlateNumber)
-                {
-                    throw new ArgumentException("PlateNumber", "The same registration number already parked in.");
                 }
             }
             return null;

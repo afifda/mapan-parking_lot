@@ -47,41 +47,49 @@ namespace parking_lot
         private static void DoActionCommand(string command)
         {
             if (string.IsNullOrWhiteSpace(command)) { throw new ArgumentNullException("command", "command could not be empty"); };
-            var splittedCommands = command.Split(' ');
-            switch (splittedCommands[0])
+            try
             {
-                case Constants.CREATE_PARKING_LOT:
-                    CreateParkingLot(splittedCommands);
-                    break;
-                case Constants.PARK:
-                    Park(splittedCommands);
-                    break;
-                case Constants.LEAVE:
-                    Leave(splittedCommands);
-                    break;
-                case Constants.STATUS:
-                    GetStatus(splittedCommands);
-                    break;
-                case Constants.REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR:
-                    RegistrationNumbersForCarsWithColour(splittedCommands);
-                    break;
-                case Constants.SLOT_NUMBERS_FOR_CARS_WITH_COLOUR:
-                    SlotNumbersForCarsWithColour(splittedCommands);
-                    break;
-                case Constants.SLOT_NUMBER_FOR_REGISTRATION_NUMBER:
-                    SlotNumberForRegistrationNumber(splittedCommands);
-                    break;
-                default:
-                    Console.WriteLine("Command was not recognized. Please enter valid command.");
-                    break;
+                var splittedCommands = command.Split(' ');
+                switch (splittedCommands[0])
+                {
+                    case Constants.CREATE_PARKING_LOT:
+                        CreateParkingLot(splittedCommands);
+                        break;
+                    case Constants.PARK:
+                        Park(splittedCommands);
+                        break;
+                    case Constants.LEAVE:
+                        Leave(splittedCommands);
+                        break;
+                    case Constants.STATUS:
+                        GetStatus(splittedCommands);
+                        break;
+                    case Constants.REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR:
+                        RegistrationNumbersForCarsWithColour(splittedCommands);
+                        break;
+                    case Constants.SLOT_NUMBERS_FOR_CARS_WITH_COLOUR:
+                        SlotNumbersForCarsWithColour(splittedCommands);
+                        break;
+                    case Constants.SLOT_NUMBER_FOR_REGISTRATION_NUMBER:
+                        SlotNumberForRegistrationNumber(splittedCommands);
+                        break;
+                    default:
+                        Console.WriteLine("Command was not recognized. Please enter valid command.");
+                        break;
 
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
         private static void SlotNumberForRegistrationNumber(string[] splittedCommands)
         {
             if (splittedCommands.Length != 2)
             {
-                throw new ArgumentException("Command", string.Concat(Constants.SLOT_NUMBER_FOR_REGISTRATION_NUMBER, " should be followed by registration number"));
+                throw new ArgumentException(string.Concat(Constants.SLOT_NUMBER_FOR_REGISTRATION_NUMBER, " should be followed by registration number"), "Command");
             }
 
             var result = parkOperationService.GetSlotNumberByPlateNumber(splittedCommands[1]);
@@ -97,7 +105,7 @@ namespace parking_lot
         {
             if (splittedCommands.Length != 2)
             {
-                throw new ArgumentException("Command", string.Concat(Constants.SLOT_NUMBERS_FOR_CARS_WITH_COLOUR, " should be followed by colour"));
+                throw new ArgumentException(string.Concat(Constants.SLOT_NUMBERS_FOR_CARS_WITH_COLOUR, " should be followed by colour"), "Command");
             }
 
             var result = parkOperationService.GetSlotNumbersByColours(splittedCommands[1]);
@@ -114,7 +122,7 @@ namespace parking_lot
         {
             if (splittedCommands.Length != 2)
             {
-                throw new ArgumentException("Command", string.Concat(Constants.REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR, " should be followed by colour"));
+                throw new ArgumentException(string.Concat(Constants.REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR, " should be followed by colour"), "Command");
             }
 
             var result = parkOperationService.GetPlateNumbersByColour(splittedCommands[1]);
@@ -131,7 +139,7 @@ namespace parking_lot
         {
             if (splittedCommands.Length != 1)
             {
-                throw new ArgumentException("Command", string.Concat(Constants.STATUS, "should leave alone"));
+                throw new ArgumentException(string.Concat(Constants.STATUS, "should leave alone"), "Command");
             }
 
             var result = parkOperationService.GetParkingLot();
@@ -153,7 +161,7 @@ namespace parking_lot
             int number = 0;
             if (splittedCommands.Length != 2 || !int.TryParse(splittedCommands[1], out number))
             {
-                throw new ArgumentException("Command", string.Concat(Constants.LEAVE, " should be followed by valid slot number"));
+                throw new ArgumentException(string.Concat(Constants.LEAVE, " should be followed by valid slot number"), "Command");
             }
 
             var parkInfo = parkOperationService.Leave(number);
@@ -170,7 +178,7 @@ namespace parking_lot
         {
             if (splittedCommands.Length != 3)
             {
-                throw new ArgumentException("Command", string.Concat(Constants.PARK, " should be followed by registration number and colour"));
+                throw new ArgumentException(string.Concat(Constants.PARK, " should be followed by registration number and colour"), "Command");
             }
 
             var car = new Car()
@@ -194,7 +202,7 @@ namespace parking_lot
             int number = 0;
             if (splittedCommands.Length != 2 || !int.TryParse(splittedCommands[1], out number))
             {
-                throw new ArgumentException("Command", string.Concat(Constants.CREATE_PARKING_LOT, " should be followed by valid integer"));
+                throw new ArgumentException(string.Concat(Constants.CREATE_PARKING_LOT, " should be followed by valid integer"), "Command");
             }
 
             parkOperationService.CreateParkingLot(number);
